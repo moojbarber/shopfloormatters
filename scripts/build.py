@@ -2,7 +2,7 @@
 """Build shopfloormatters.com into ./dist
 
     python scripts/build.py                    # production (served from the domain root)
-    python scripts/build.py --base /mesmatters # preview on <user>.github.io/mesmatters
+    python scripts/build.py --base /shopfloormatters # preview on <user>.github.io/shopfloormatters
 
 Content:
   content/posts/*.md         new articles (front matter + Markdown)

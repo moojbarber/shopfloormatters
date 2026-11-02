@@ -36,7 +36,7 @@ API = "https://api.kit.com/v4"
 def kit(method, path, key, body=None):
     req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode() if body else None,
                                  headers={"X-Kit-Api-Key": key, "Accept": "application/json",
-                                          "Content-Type": "application/json", "User-Agent": "mesmatters-newsletter"})
+                                          "Content-Type": "application/json", "User-Agent": "shopfloormatters-newsletter"})
     with urllib.request.urlopen(req, timeout=30) as r:
         return json.loads(r.read() or b"{}")
 

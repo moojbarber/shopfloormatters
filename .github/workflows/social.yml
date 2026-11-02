@@ -49,7 +49,7 @@ jobs:
           SOCIAL_KEY: ${{ secrets.SOCIAL_KEY }}
       - name: Save posting record
         run: |
-          git config user.name "mesmatters-bot"
+          git config user.name "shopfloormatters-bot"
           git config user.email "actions@users.noreply.github.com"
           git add social/state
           git diff --cached --quiet || (git commit -m "Social: update posting record [skip ci]" && git pull --rebase && git push)
