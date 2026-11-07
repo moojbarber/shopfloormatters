@@ -13,6 +13,8 @@ send_time: "08:00"       # UK time the email goes out
 # Evergreen newsletter: every subscriber starts at the first article in `weekly`,
 # whenever they join. scripts/kit_sequence.py loads the list into a Kit sequence.
 # Leave publish false until the drafts have been reviewed in Kit.
+# Sign-up boxes stay off until this is true, even with KIT_FORM_ID set in GitHub.
+signups_open: false
 sequence:
   name: "Shopfloor Matters: the article series"
   weekly_first: 8          # the first 8 emails go a week apart...

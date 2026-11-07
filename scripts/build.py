@@ -41,6 +41,10 @@ SOCIALS = [
 ]
 # Kit (kit.com) form ID for the newsletter sign-up. Set the KIT_FORM_ID repo variable; empty = sign-ups not open yet.
 KIT_FORM_ID = os.environ.get("KIT_FORM_ID", "").strip()
+# ...and sign-ups only go live once `signups_open: true` is set in content/schedule.yaml
+# (after the form is linked to the Kit sequence and its emails are published).
+if not (yaml.safe_load((Path(__file__).resolve().parent.parent / "content" / "schedule.yaml").read_text(encoding="utf-8")) or {}).get("signups_open"):
+    KIT_FORM_ID = ""
 # Where "Ask Matt" questions are POSTed (e.g. a Formspree or Tally endpoint). Empty = copy the question and open LinkedIn.
 ASK_FORM_ENDPOINT = os.environ.get("ASK_FORM_ENDPOINT", "").strip()
 
