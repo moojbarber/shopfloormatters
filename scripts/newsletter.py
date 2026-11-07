@@ -79,7 +79,7 @@ def email_html(slug, title, description, intro, note="", ps=""):
 <p style="margin:28px 0"><a href="{url}" style="display:inline-block;padding:14px 24px;border-radius:12px;background:#8b6cff;color:#ffffff;font-weight:700;text-decoration:none">Read the full article →</a></p>
 <p>If you have a question about your own project, just hit reply.</p>
 <p>Matt</p>{tail}
-<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?utm_source=newsletter&utm_medium=email">subscribe here</a> to get one article every Tuesday.</p>"""
+<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?utm_source=newsletter&utm_medium=email">subscribe here</a> to get the series from the first article.</p>"""
 
 
 def main():

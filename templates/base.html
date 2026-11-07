@@ -41,7 +41,7 @@
     <nav class="nav" id="nav" aria-label="Main">
       {% for item in nav %}<a class="nl" href="{{ base }}{{ item.href }}"{% if item.key == active or (item.key == "articles" and active in ["thought-leadership", "mes-education", "mes-advice"]) %} aria-current="page"{% endif %}><span class="t">{{ item.label }}</span><small>{{ item.desc }}</small></a>
       {% endfor %}<a class="btn sm" href="{{ base }}/subscribe">Subscribe</a>
-      <div class="nav-foot"><p>A featured article every Tuesday. Free, no spam.</p><a href="{{ linkedin }}" target="_blank" rel="me noopener">Follow on LinkedIn →</a></div>
+      <div class="nav-foot"><p>One article at a time, from the start of the series. Free, no spam.</p><a href="{{ linkedin }}" target="_blank" rel="me noopener">Follow on LinkedIn →</a></div>
     </nav>
     <button class="burger" aria-label="Open menu" aria-controls="nav" aria-expanded="false"><span></span></button>
   </div>

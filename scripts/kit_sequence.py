@@ -1,0 +1,125 @@
+#!/usr/bin/env python3
+"""Load the evergreen newsletter into a Kit (kit.com) sequence.
+
+Every subscriber starts at the first article in content/schedule.yaml `weekly`,
+whenever they join. This script creates the sequence named in `sequence.name`
+(if it doesn't exist) and adds one email per article, in order. Existing emails
+(matched by subject) are updated rather than duplicated, so it's safe to re-run
+after reordering, editing notes or changing the cadence.
+
+Emails are drafts unless `sequence.publish` is true. Nothing sends until the
+emails are published and a form or automation adds subscribers to the sequence.
+
+Needs KIT_API_KEY (GitHub Actions secret). Kit's Creator plan is needed for sequences.
+
+Usage: python scripts/kit_sequence.py [--dry-run] [--limit N]
+"""
+import argparse
+import json
+import os
+import sys
+import urllib.error
+import urllib.request
+from pathlib import Path
+
+import yaml
+
+sys.path.insert(0, str(Path(__file__).resolve().parent))
+from build import ROOT, SITE  # noqa: E402
+from newsletter import API, article, email_html  # noqa: E402
+
+
+def kit(method, path, key, body=None):
+    req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode() if body is not None else None,
+                                 headers={"X-Kit-Api-Key": key, "Accept": "application/json",
+                                          "Content-Type": "application/json", "User-Agent": "shopfloormatters-newsletter"})
+    try:
+        with urllib.request.urlopen(req, timeout=30) as r:
+            return json.loads(r.read() or b"{}")
+    except urllib.error.HTTPError as e:
+        detail = e.read().decode("utf-8", "replace")[:500]
+        if e.code == 403:
+            detail += "\nKit refused this. Sequences need the Creator plan (or its free trial)."
+        sys.exit(f"Kit API {method} {path} failed with {e.code}: {detail}")
+
+
+def every(key, path, field):
+    items, after = [], None
+    for _ in range(50):
+        sep = "&" if "?" in path else "?"
+        data = kit("GET", f"{path}{sep}per_page=100" + (f"&after={after}" if after else ""), key)
+        items += data.get(field, [])
+        page = data.get("pagination") or {}
+        if not page.get("has_next_page"):
+            break
+        after = page.get("end_cursor")
+    return items
+
+
+def plan(cfg, limit=None):
+    seq = cfg.get("sequence") or {}
+    first, gap = int(seq.get("weekly_first", 8)), int(seq.get("then_every_days", 14))
+    notes = cfg.get("notes") or {}
+    out = []
+    for i, slug in enumerate((cfg.get("weekly") or [])[:limit]):
+        title, description, intro = article(slug)
+        extra = notes.get(slug) or {}
+        out.append({
+            "subject": title,
+            "preview_text": description[:150],
+            "content": email_html(slug, title, description, intro, extra.get("note", ""), extra.get("ps", "")),
+            "delay_value": 0 if i == 0 else (7 if i < first else gap),
+            "delay_unit": "days",
+            "published": bool(seq.get("publish", False)),
+            "position": i,
+        })
+    return seq, out
+
+
+def main():
+    ap = argparse.ArgumentParser()
+    ap.add_argument("--dry-run", action="store_true")
+    ap.add_argument("--limit", type=int, help="only the first N articles")
+    a = ap.parse_args()
+
+    cfg = yaml.safe_load((ROOT / "content" / "schedule.yaml").read_text(encoding="utf-8")) or {}
+    seq, emails = plan(cfg, a.limit)
+    name = seq.get("name") or "Shopfloor Matters: the article series"
+    day = 0
+    for e in emails:
+        day += e["delay_value"]
+        print(f"day {day:>3}  {e['subject']}")
+
+    key = os.environ.get("KIT_API_KEY", "").strip()
+    if a.dry_run or not key:
+        print(("DRY RUN" if a.dry_run else "KIT_API_KEY not set") + f": {len(emails)} emails for '{name}', nothing changed in Kit.")
+        return
+
+    found = [s for s in every(key, "/sequences", "sequences") if s.get("name") == name]
+    if found:
+        sid = found[0]["id"]
+        print(f"Using existing sequence {sid}")
+    else:
+        sid = kit("POST", "/sequences", key, {
+            "name": name, "send_hour": int(seq.get("send_hour", 8)), "time_zone": "Europe/London",
+            "send_days": ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"],
+            "hold": True, "repeat": False, "active": True,
+        })["sequence"]["id"]
+        print(f"Created sequence {sid}")
+
+    have = {e.get("subject"): e for e in every(key, f"/sequences/{sid}/emails", "emails")}
+    added = updated = 0
+    for e in emails:
+        old = have.get(e["subject"])
+        if old:
+            kit("PUT", f"/sequences/{sid}/emails/{old['id']}", key, e)
+            updated += 1
+        else:
+            kit("POST", f"/sequences/{sid}/emails", key, e)
+            added += 1
+    state = "published" if seq.get("publish") else "drafts"
+    print(f"Sequence {sid}: {added} added, {updated} updated ({state}).")
+
+
+if __name__ == "__main__":
+    main()

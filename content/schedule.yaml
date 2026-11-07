@@ -9,6 +9,16 @@
 publish_all_now: true
 start: 2026-11-10        # a Tuesday
 send_time: "08:00"       # UK time the email goes out
+
+# Evergreen newsletter: every subscriber starts at the first article in `weekly`,
+# whenever they join. scripts/kit_sequence.py loads the list into a Kit sequence.
+# Leave publish false until the drafts have been reviewed in Kit.
+sequence:
+  name: "Shopfloor Matters: the article series"
+  weekly_first: 8          # the first 8 emails go a week apart...
+  then_every_days: 14      # ...then every fortnight
+  send_hour: 8             # UK time
+  publish: false
 weekly:
   - connected-worker-one-app-not-five
   - what-is-a-smart-factory
@@ -80,7 +90,7 @@ weekly:
 # newsletter, keyed by article slug. Markdown links are fine; site links can start with /.
 notes:
   connected-worker-one-app-not-five:
-    note: "Welcome to the first Shopfloor Matters newsletter. Every Tuesday I'll send you one article from the site, on the smart factory and shopfloor AI, and the MES/MOM that makes them work.\n\nWe're starting with the people on the shopfloor, and the tools we give them."
+    note: "Welcome to Shopfloor Matters. Over the coming months I'll send you one article at a time from the site, on the smart factory and shopfloor AI, and the MES/MOM that makes them work. Weekly to start, then every fortnight.\n\nWe're starting with the people on the shopfloor, and the tools we give them."
   what-is-a-smart-factory:
     note: "This week is my definition of a smart factory, and the five things that define one. Only one of the five is really about technology."
     ps: "P.S. If you'd like to put a number on it, the [1% OEE calculator](/tools/oee-one-percent) on the site works from two figures in your annual report."
