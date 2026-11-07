@@ -18,6 +18,7 @@ import argparse
 import json
 import os
 import sys
+import time
 import urllib.error
 import urllib.request
 from pathlib import Path
@@ -33,14 +34,19 @@ def kit(method, path, key, body=None):
     req = urllib.request.Request(API + path, method=method, data=json.dumps(body).encode() if body is not None else None,
                                  headers={"X-Kit-Api-Key": key, "Accept": "application/json",
                                           "Content-Type": "application/json", "User-Agent": "shopfloormatters-newsletter"})
-    try:
-        with urllib.request.urlopen(req, timeout=30) as r:
-            return json.loads(r.read() or b"{}")
-    except urllib.error.HTTPError as e:
-        detail = e.read().decode("utf-8", "replace")[:500]
-        if e.code == 403:
-            detail += "\nKit refused this. Sequences need the Creator plan (or its free trial)."
-        sys.exit(f"Kit API {method} {path} failed with {e.code}: {detail}")
+    for attempt in range(8):
+        try:
+            time.sleep(0.6)  # stay under Kit's rate limit
+            with urllib.request.urlopen(req, timeout=30) as r:
+                return json.loads(r.read() or b"{}")
+        except urllib.error.HTTPError as e:
+            if e.code == 429 and attempt < 7:
+                time.sleep(15 * (attempt + 1))
+                continue
+            detail = e.read().decode("utf-8", "replace")[:500]
+            if e.code == 403:
+                detail += "\nKit refused this. Sequences need the Creator plan (or its free trial)."
+            sys.exit(f"Kit API {method} {path} failed with {e.code}: {detail}")
 
 
 def every(key, path, field):
