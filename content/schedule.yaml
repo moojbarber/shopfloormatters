@@ -10,8 +10,9 @@ publish_all_now: true
 start: 2026-11-10        # a Tuesday
 send_time: "08:00"       # UK time the email goes out
 
-# Evergreen newsletter: every subscriber starts at the first article in `weekly`,
-# whenever they join. scripts/kit_sequence.py loads the list into a Kit sequence.
+# Evergreen newsletter: every subscriber starts at email 1, whenever they join.
+# The order follows the learning paths in content/paths.yaml (each article once, the
+# first time it appears). scripts/kit_sequence.py loads it into a Kit sequence.
 # Leave publish false until the drafts have been reviewed in Kit.
 # Sign-up boxes stay off until this is true, even with KIT_FORM_ID set in GitHub.
 signups_open: false
@@ -21,6 +22,7 @@ sequence:
   then_every_days: 14      # ...then every fortnight
   send_hour: 8             # UK time
   publish: false
+  welcome: "Welcome to Shopfloor Matters. Over time I'll send you every article on the site, one at a time, following the learning paths from the foundations of MES/MOM through to the business case and implementation. Weekly to start, then every fortnight.\n\nWe're starting at the beginning: what MES and MOM actually are."
 weekly:
   - connected-worker-one-app-not-five
   - what-is-a-smart-factory
@@ -91,13 +93,11 @@ weekly:
 # Optional personal note (above the article) and P.S. (after the sign-off) for each
 # newsletter, keyed by article slug. Markdown links are fine; site links can start with /.
 notes:
-  connected-worker-one-app-not-five:
-    note: "Welcome to Shopfloor Matters. Over the coming months I'll send you one article at a time from the site, on the smart factory and shopfloor AI, and the MES/MOM that makes them work. Weekly to start, then every fortnight.\n\nWe're starting with the people on the shopfloor, and the tools we give them."
   what-is-a-smart-factory:
-    note: "This week is my definition of a smart factory, and the five things that define one. Only one of the five is really about technology."
+    note: "This one is my definition of a smart factory, and the five things that define one. Only one of the five is really about technology."
     ps: "P.S. If you'd like to put a number on it, the [1% OEE calculator](/tools/oee-one-percent) on the site works from two figures in your annual report."
   ai-ml-genai-on-the-shopfloor:
-    note: "This week is a plain-English guide to the different kinds of AI on the shopfloor, and where each one earns its keep."
+    note: "This one is a plain-English guide to the different kinds of AI on the shopfloor, and where each one earns its keep."
   time-to-truth:
-    note: "This week is the question I'd ask instead of a maturity score, and why AI adds value at every stage of the answer."
+    note: "This one is the question I'd ask instead of a maturity score, and why AI adds value at every stage of the answer."
     ps: "P.S. To see how your systems fit together today, try the [systems landscape builder](/tools/systems-landscape) on the site."

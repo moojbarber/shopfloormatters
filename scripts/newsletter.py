@@ -67,19 +67,76 @@ def article(slug):
     return html.unescape(fm["title"]), fm.get("description", ""), intro
 
 
-def email_html(slug, title, description, intro, note="", ps=""):
-    url = f"{SITE}/post/{slug}?utm_source=newsletter&utm_medium=email"
+def clip(text, n=150):
+    return text if len(text) <= n else text[:n].rsplit(" ", 1)[0].rstrip(",;:") + "…"
+
+
+def extras(slug):
+    """Extra value for the email, all taken from reviewed site content: reading time,
+    the article's summary, its section headings, up to three FAQs and two related articles."""
+    fm, body = parse_md(ROOT / "content" / "posts" / f"{slug}.md")
+    answers = (yaml.safe_load((ROOT / "content" / "answers.yaml").read_text(encoding="utf-8")) or {}).get(slug) or {}
+    words = len(re.findall(r"\w+", re.sub(r"\(https?://[^)]*\)", "", body)))
+    heads = [re.sub(r"[*_`]", "", h).strip() for h in re.findall(r"^##\s+(.+)$", body, flags=re.M)]
+    heads = [h for h in heads if not re.match(r"(faq|frequently asked)", h, re.I)][:8]
+    tags = (yaml.safe_load((ROOT / "content" / "tags.yaml").read_text(encoding="utf-8")) or {}).get("articles") or {}
+    mine = set(tags.get(slug) or [])
+    others = [s for s in tags if s != slug and (ROOT / "content" / "posts" / f"{s}.md").exists()]
+    # rarer shared tags count for more, so a broad tag like MES/MOM doesn't decide it
+    count = {}
+    for ids in tags.values():
+        for t in ids or []:
+            count[t] = count.get(t, 0) + 1
+    score = lambda s: sum(1 / count[t] for t in mine & set(tags.get(s) or []))
+    others.sort(key=lambda s: -score(s))
+    related = []
+    for s in others[:2]:
+        rfm, _ = parse_md(ROOT / "content" / "posts" / f"{s}.md")
+        related.append({"slug": s, "title": html.unescape(rfm["title"]), "description": rfm.get("description", "")})
+    return {"minutes": max(3, round(words / 230)), "summary": answers.get("summary", ""),
+            "faq": [q for q in (answers.get("faq") or []) if not same(q["a"], answers.get("summary", ""))][:3],
+            "heads": heads, "related": related}
+
+
+def same(a, b):
+    """True when an FAQ answer mostly repeats the summary."""
+    wa, wb = set(re.findall(r"\w+", a.lower())), set(re.findall(r"\w+", b.lower()))
+    return bool(wa and wb) and len(wa & wb) / min(len(wa), len(wb)) > 0.6
+
+
+def email_html(slug, title, description, intro, note="", ps="", more=None):
+    utm = "utm_source=newsletter&utm_medium=email"
+    url = f"{SITE}/post/{slug}?{utm}"
     img = f"{SITE}/images/og/{slug}.png"
     fix = lambda t: re.sub(r'href="/', f'href="{SITE}/', markdown.markdown(t))
+    inline = lambda t: fix(t)[3:-4] if fix(t).startswith("<p>") else fix(t)
+    h2 = 'style="font-size:19px;margin:32px 0 10px"'
     lead = fix(note) + '<hr style="border:none;border-top:1px solid #ddd;margin:24px 0">' if note else ""
-    tail = f'<p style="margin-top:24px">{fix(ps)[3:-4]}</p>' if ps else ""
-    return f"""{lead}<p><a href="{url}"><img src="{img}" alt="{html.escape(title)}" width="600" style="width:100%;max-width:600px;height:auto;border-radius:12px"></a></p>
-<h1 style="margin:24px 0 12px">{html.escape(title)}</h1>
-{intro}
-<p style="margin:28px 0"><a href="{url}" style="display:inline-block;padding:14px 24px;border-radius:12px;background:#8b6cff;color:#ffffff;font-weight:700;text-decoration:none">Read the full article →</a></p>
-<p>If you have a question about your own project, just hit reply.</p>
-<p>Matt</p>{tail}
-<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?utm_source=newsletter&utm_medium=email">subscribe here</a> to get the series from the first article.</p>"""
+    tail = f'<p style="margin-top:24px">{inline(ps)}</p>' if ps else ""
+    button = f'<p style="margin:28px 0"><a href="{url}" style="display:inline-block;padding:14px 24px;border-radius:12px;background:#8b6cff;color:#ffffff;font-weight:700;text-decoration:none">Read the full article →</a></p>'
+    m = more or {}
+    mins = f'<p style="margin:0 0 16px;color:#888;font-size:14px">{m["minutes"]}-minute read</p>' if m.get("minutes") else ""
+    short = (f'<div style="margin:24px 0;padding:16px 20px;border-left:4px solid #8b6cff;background:#f5f3ff;border-radius:8px">'
+             f'<p style="margin:0 0 6px;font-weight:700">In short</p><p style="margin:0">{inline(m["summary"])}</p></div>') if m.get("summary") else ""
+    heads = (f'<h2 {h2}>In the full article</h2><ul style="padding-left:20px">'
+             + "".join(f"<li>{html.escape(h)}</li>" for h in m["heads"]) + "</ul>") if m.get("heads") else ""
+    faq = (f'<h2 {h2}>Quick answers</h2>' + "".join(
+        f'<p style="margin:16px 0 4px;font-weight:700">{html.escape(q["q"])}</p><p style="margin:0">{inline(q["a"])}</p>' for q in m["faq"])) if m.get("faq") else ""
+    rel = (f'<h2 {h2}>Related reading</h2>' + "".join(
+        f'<p style="margin:12px 0"><a href="{SITE}/post/{r["slug"]}?{utm}" style="font-weight:700">{html.escape(r["title"])}</a><br>'
+        f'<span style="color:#555">{html.escape(r["description"])}</span></p>' for r in m["related"])) if m.get("related") else ""
+    pth = m.get("path") or {}
+    ptag = (f'<p style="margin:0 0 16px;font-size:14px;color:#555">'
+            + (f'<b>New learning path: {html.escape(pth["title"])}.</b> {html.escape(pth["blurb"])}' if pth.get("starts")
+               else f'From the learning path <b>{html.escape(pth["title"])}</b>') + '</p>') if pth else ""
+    nxt = (f'<p style="margin-top:24px;font-size:14px;color:#555">Next time: <b>{html.escape(m["next"])}</b></p>') if m.get("next") else ""
+    return f"""{lead}{ptag}<p><a href="{url}"><img src="{img}" alt="{html.escape(title)}" width="600" style="width:100%;max-width:600px;height:auto;border-radius:12px"></a></p>
+<h1 style="margin:24px 0 8px">{html.escape(title)}</h1>
+{mins}{intro}
+{short}{heads}{button}{faq}{rel}
+<p style="margin-top:28px">If you have a question about your own project, just hit reply.</p>
+<p>Matt</p>{tail}{nxt}
+<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first article.</p>"""
 
 
 def main():
@@ -102,7 +159,7 @@ def main():
     title, description, intro = article(slug)
     cfg = yaml.safe_load((ROOT / "content" / "schedule.yaml").read_text(encoding="utf-8")) or {}
     extra = (cfg.get("notes") or {}).get(slug) or {}
-    content = email_html(slug, title, description, intro, extra.get("note", ""), extra.get("ps", ""))
+    content = email_html(slug, title, description, intro, extra.get("note", ""), extra.get("ps", ""), extras(slug))
     hh, mm = (cfg.get("send_time") or "08:00").split(":")
     try:
         from zoneinfo import ZoneInfo
@@ -114,7 +171,7 @@ def main():
 
     payload = {
         "subject": title,
-        "preview_text": description[:150],
+        "preview_text": clip(description),
         "description": f"Weekly article: {slug}",
         "content": content,
         "public": False,

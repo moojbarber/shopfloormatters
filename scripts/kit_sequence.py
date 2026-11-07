@@ -1,8 +1,8 @@
 #!/usr/bin/env python3
 """Load the evergreen newsletter into a Kit (kit.com) sequence.
 
-Every subscriber starts at the first article in content/schedule.yaml `weekly`,
-whenever they join. This script creates the sequence named in `sequence.name`
+Every subscriber starts at email 1, whenever they join. The order follows the
+learning paths in content/paths.yaml. This script creates the sequence named in `sequence.name`
 (if it doesn't exist) and adds one email per article, in order. Existing emails
 (matched by subject) are updated rather than duplicated, so it's safe to re-run
 after reordering, editing notes or changing the cadence.
@@ -25,8 +25,8 @@ from pathlib import Path
 import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from build import ROOT, SITE  # noqa: E402
-from newsletter import API, article, email_html  # noqa: E402
+from build import ROOT, SITE, parse_md  # noqa: E402
+from newsletter import API, article, email_html, extras, clip  # noqa: E402
 
 
 def kit(method, path, key, body=None):
@@ -56,18 +56,42 @@ def every(key, path, field):
     return items
 
 
+def order():
+    """Every live article once, in learning-path order (paths.yaml file order), with the path it's sent under."""
+    paths = (yaml.safe_load((ROOT / "content" / "paths.yaml").read_text(encoding="utf-8")) or {})["paths"]
+    seen, out = set(), []
+    for p in paths:
+        first = True
+        for slug in p["stations"]:
+            if slug in seen:
+                continue
+            fm, _ = parse_md(ROOT / "content" / "posts" / f"{slug}.md")
+            if fm.get("draft"):
+                continue
+            seen.add(slug)
+            out.append((slug, p, first))
+            first = False
+    return out
+
+
 def plan(cfg, limit=None):
     seq = cfg.get("sequence") or {}
     first, gap = int(seq.get("weekly_first", 8)), int(seq.get("then_every_days", 14))
     notes = cfg.get("notes") or {}
+    items = order()
+    titles = [article(slug)[0] for slug, _, _ in items]
     out = []
-    for i, slug in enumerate((cfg.get("weekly") or [])[:limit]):
+    for i, (slug, path, starts) in enumerate(items[:limit]):
         title, description, intro = article(slug)
         extra = notes.get(slug) or {}
+        note = seq.get("welcome", "") if i == 0 else extra.get("note", "")
+        more = extras(slug)
+        more["path"] = {"title": path["title"], "blurb": path["blurb"], "starts": starts and i > 0}
+        more["next"] = titles[i + 1] if i + 1 < len(titles) else ""
         out.append({
             "subject": title,
-            "preview_text": description[:150],
-            "content": email_html(slug, title, description, intro, extra.get("note", ""), extra.get("ps", "")),
+            "preview_text": clip(description),
+            "content": email_html(slug, title, description, intro, note, extra.get("ps", ""), more),
             "delay_value": 0 if i == 0 else (7 if i < first else gap),
             "delay_unit": "days",
             "published": bool(seq.get("publish", False)),
@@ -107,7 +131,14 @@ def main():
         })["sequence"]["id"]
         print(f"Created sequence {sid}")
 
-    have = {e.get("subject"): e for e in every(key, f"/sequences/{sid}/emails", "emails")}
+    existing = every(key, f"/sequences/{sid}/emails", "emails")
+    if existing and not any(e.get("published") for e in existing):
+        # all drafts: start clean so the order is exactly right
+        for e in existing:
+            kit("DELETE", f"/sequences/{sid}/emails/{e['id']}", key)
+        print(f"Removed {len(existing)} draft emails to rebuild in order")
+        existing = []
+    have = {e.get("subject"): e for e in existing}
     added = updated = 0
     for e in emails:
         old = have.get(e["subject"])
