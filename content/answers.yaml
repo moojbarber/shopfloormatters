@@ -64,12 +64,12 @@ what-is-oee:
       a: "Manual recording misses short stops of a few seconds and rounds the length of longer ones, so manual OEE is usually higher than reality. Automatic capture from the equipment counts every stop. Explain the change before it happens, so the lower figure is treated as a more accurate baseline rather than a failure."
 
 mesa-and-the-definition-of-mes:
-  summary: "MESA International, best known for its MESA-11 model of MES functionality, ceased operation on 30 June 2026, and ISA took on its educational programmes and content the same day. The MESA-11 model set out eleven functions, far broader than production execution, and later models connected MES to the wider business. Members can transfer to ISA free until the end of 2026."
+  summary: "MESA International, best known for its MESA-11 model of MES functionality, ceased operation on 30 June 2026, and ISA took on its educational programmes and content the same day. The MESA-11 model set out eleven functions, far broader than production execution, and later models connected MES to the wider business."
   faq:
     - q: "What is the MESA-11 model?"
       a: "Published by MESA in 1997, it set out eleven core functions of MES, including detailed sequencing, dispatching, genealogy, labour, quality, document control, performance analysis, maintenance and data collection. It was a functional map of what a factory needs managed, not a specification for a single product."
     - q: "What happened to MESA International?"
-      a: "MESA ceased operation on 30 June 2026. The International Society of Automation took on its educational programmes and content the same day, and MESA members can transfer to ISA at no cost until the end of 2026."
+      a: "MESA ceased operation on 30 June 2026. The International Society of Automation took on its educational programmes and content the same day."
     - q: "How did MESA define MES?"
       a: "MESA described MES as a dynamic information system that drives effective execution of manufacturing operations. Its models grew over time, from the eleven functions of 1997 to later models showing how production operations connect with business operations and strategy."
 

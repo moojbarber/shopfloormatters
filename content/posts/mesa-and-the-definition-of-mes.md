@@ -9,7 +9,7 @@ art: wheel
 start: 3
 ---
 
-On 30 June 2026, MESA International, the Manufacturing Enterprise Solutions Association, ceased operation. The same day, the International Society of Automation (ISA) took on its educational programmes and industry content, along with its community. MESA members can transfer to ISA at no cost until the end of 2026 ([ISA, June 2026](https://www.isa.org/news-press-releases/2026/june/isa-announces-assumption-of-mesa-content)).
+On 30 June 2026, MESA International, the Manufacturing Enterprise Solutions Association, ceased operation. The same day, the International Society of Automation (ISA) took on its educational programmes and industry content, along with its community ([ISA, June 2026](https://www.isa.org/news-press-releases/2026/june/isa-announces-assumption-of-mesa-content)).
 
 It wasn't a merger in the usual sense. MESA wound down, and ISA agreed to become the home for what it had built.
 
@@ -55,7 +55,7 @@ The direction was clear: MES stopped being seen as a standalone shopfloor tool a
 
 Probably less than you'd think, at least day to day. ISA-95 and ISA-88 already underpinned much of MESA's educational work, so the content is moving to the organisation that owns the standards it was built on. If you're new to those, start with [The ISA-95 model explained](/post/isa-95-explained) and [ISA-88 and ISA-95](/post/isa-88-and-isa-95).
 
-ISA says it will share details on access and future plans through [isa.org](https://www.isa.org/). If you hold a MESA membership, the free transfer runs until the end of 2026.
+ISA says it will share details on access and future plans through [isa.org](https://www.isa.org/).
 
 ## Configure, don't customise
 
