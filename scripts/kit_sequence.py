@@ -27,7 +27,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import ROOT, SITE, parse_md  # noqa: E402
-from newsletter import API, article, email_html, extras, clip  # noqa: E402
+from newsletter import API, article, email_html, extras, clip, written_email  # noqa: E402
 
 
 def kit(method, path, key, body=None):
@@ -94,10 +94,13 @@ def plan(cfg, limit=None):
         more = extras(slug)
         more["path"] = {"title": path["title"], "blurb": path["blurb"], "starts": starts and i > 0}
         more["next"] = titles[i + 1] if i + 1 < len(titles) else ""
+        written = written_email(slug, path["title"], more["minutes"])
+        subject, preview, content = written or (title, clip(description),
+                                                email_html(slug, title, description, intro, note, extra.get("ps", ""), more))
         out.append({
-            "subject": title,
-            "preview_text": clip(description),
-            "content": email_html(slug, title, description, intro, note, extra.get("ps", ""), more),
+            "subject": subject,
+            "preview_text": preview,
+            "content": content,
             "delay_value": 0 if i == 0 else (7 if i < first else gap),
             "delay_unit": "days",
             "published": bool(seq.get("publish", False)),

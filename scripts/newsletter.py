@@ -139,6 +139,31 @@ def email_html(slug, title, description, intro, note="", ps="", more=None):
 <p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first article.</p>"""
 
 
+def written_email(slug, path_title="", minutes=0):
+    """A hand-written email in content/newsletter/<slug>.md (front matter: subject, preview), or None.
+    `[[button: Label]]` on its own line becomes the button to the full article."""
+    f = ROOT / "content" / "newsletter" / f"{slug}.md"
+    if not f.exists():
+        return None
+    fm, body = parse_md(f)
+    utm = "utm_source=newsletter&utm_medium=email"
+    url = f"{SITE}/post/{slug}?{utm}"
+    button = lambda m: (f'<p style="margin:28px 0"><a href="{url}" style="display:inline-block;padding:14px 24px;border-radius:12px;'
+                        f'background:#8b6cff;color:#ffffff;font-weight:700;text-decoration:none">{html.escape(m.group(1).strip())} →</a></p>')
+    out = markdown.markdown(body)
+    out = re.sub(r"<p>\[\[button:(.*?)\]\]</p>", button, out)
+    out = re.sub(r'href="/([^"]*)"', lambda m: f'href="{SITE}/{m.group(1)}{"&" if "?" in m.group(1) else "?"}{utm}"', out)
+    out = out.replace("<h2>", '<h2 style="font-size:19px;line-height:1.3;margin:30px 0 10px">')
+    bits = [html.escape(path_title)] if path_title else []
+    bits.append(f'<a href="{url}" style="color:#888">Read on the site</a>')
+    if minutes:
+        bits.append(f"{minutes}-minute read")
+    top = f'<p style="margin:0 0 20px;font-size:13px;color:#888">{" · ".join(bits)}</p>'
+    foot = (f'<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can '
+            f'<a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first article.</p>')
+    return fm["subject"], fm.get("preview", ""), top + out + foot
+
+
 def main():
     ap = argparse.ArgumentParser()
     ap.add_argument("--date", help="release date to send for (default: today, UK)")
