@@ -2,8 +2,6 @@
 subject: "1969."
 preview: "The year a reprogrammable computer replaced a wall of relays, and what every step since tells us about AI."
 ---
-Hi {{ subscriber.first_name | default: "there" }},
-
 In 1969, General Motors put the first programmable logic controller to work. It replaced banks of hard-wired relays with a computer that could be reprogrammed.
 
 That one change set off fifty years of factory systems, each built on the one before. Knowing that story makes it much easier to see where your own factory is, and where AI fits.

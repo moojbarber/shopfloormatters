@@ -2,8 +2,6 @@
 subject: "Show me, don't tell me."
 preview: "Two vendors can both say MES and be selling very different things. Four questions that tell them apart."
 ---
-Hi {{ subscriber.first_name | default: "there" }},
-
 Two vendors can both call their product an MES and be selling very different things.
 
 One means the production pillar: release the order, run it, record counts, scrap and downtime, calculate OEE. The other means a platform that runs production, quality, inventory and maintenance on the same data. Same three letters on the brochure, very different factory once it's live.

@@ -2,8 +2,6 @@
 subject: "The eleven-point checklist."
 preview: "MESA published it in 1997. It's still one of the best ways to scope an MES/MOM project."
 ---
-Hi {{ subscriber.first_name | default: "there" }},
-
 On 30 June 2026, MESA International ceased operation. The same day, the International Society of Automation (ISA) took on its content and its community.
 
 It wasn't a merger in the usual sense. MESA wound down, and ISA agreed to become the home for what it had built.

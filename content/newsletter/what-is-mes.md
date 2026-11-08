@@ -2,8 +2,6 @@
 subject: "You already have an MES."
 preview: "It's just made of paper travellers, whiteboards, spreadsheets and what people remember."
 ---
-Hi {{ subscriber.first_name | default: "there" }},
-
 Welcome to Shopfloor Matters, and thank you for signing up.
 
 Each email in this series takes one article from the site and gives you the useful part straight away, in about five minutes. If you want to go deeper, the full article is one click away. They'll come weekly for the first couple of months, then every fortnight, following the learning paths on the site: we start with the foundations and work up to shopfloor AI and the business case for it.
