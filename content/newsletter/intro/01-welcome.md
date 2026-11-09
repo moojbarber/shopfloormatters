@@ -9,15 +9,19 @@ A bit about me first. I studied computer science at Sheffield, then joined Light
 
 Along the way I've been involved in countless MES/MOM projects, in food and beverage, automotive, packaging, metal and plastics fabrication, industrial manufacturing and more. Most of what I write comes from what I've learned on those projects.
 
-## Why the site exists
+## What the site is about
 
-Smart manufacturing and AI are everywhere right now. Most of what gets written about them skips the hard part: the shopfloor systems and data that decide how much value any of it delivers.
+Smart manufacturing and AI are everywhere right now. Most of what gets written about them skips the hard part.
 
-That's what I write about: shopfloor AI, and the MES/MOM foundations underneath it. Some of it is for people early in the journey, and some of it is opinion. All of it is vendor-neutral. I work for a vendor, so I won't recommend a product on the site, mine included.
+I write about shopfloor AI, and what it really takes to move from paper, Excel, ERP screens on the shopfloor or a homegrown system to a truly smart factory.
+
+The content centres on the technology applications that get you there: MES/MOM, connected worker, ERP, WMS, CPQ, supply chain planning, APS, PLM, quality and lab systems, maintenance systems, and the IIoT and data platforms that connect them all. It also covers the business challenges you'll face along the way, from building the case and choosing a vendor to bringing people with you and rolling out across sites.
+
+All of it is vendor-neutral. I work for a vendor, so I won't recommend a product on the site, mine included.
 
 ## What you'll find on it
 
-- **97 articles**, from what MES actually is to agentic AI and building the business case
+- **97 articles**, from moving off paper and spreadsheets to agentic AI and the business case
 - **13 learning paths** that take you through those articles in a sensible order
 - **A role explorer** showing what the shopfloor means for 21 roles, from the CEO to the operator
 - **Free tools**, starting with a systems landscape builder and a calculator for what 1% of OEE is worth
