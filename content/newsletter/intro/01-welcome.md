@@ -1,23 +1,23 @@
 ---
-subject: "Welcome to Shopfloor Matters."
-preview: "Who I am, and how to get the most out of the site."
+subject: "Welcome. I'm Matt."
+preview: "A bit about me, and how to get the most out of the site."
 link: /
 ---
-Thank you for signing up. I'm Matt Barber, and I write Shopfloor Matters.
+Thanks for signing up. I'm really glad you're here.
 
-A bit about me first. I studied computer science at Sheffield, then joined Lighthouse, a pure-play MES company, where I built MES projects as a software engineer. I moved into running implementations and designing solutions for manufacturers around the world, then led the product. Today I'm VP and General Manager for the shopfloor business at Infor, globally responsible for it and its P&L.
+A bit about me first. By day, I run the global shopfloor software business at Infor. I live south of London, and I'm a dad of three. When I'm not working, you'll find me reading, listening to music, out with friends, or nosing around anywhere that'll show me how things are made.
 
-Along the way I've been involved in countless MES/MOM projects, in food and beverage, automotive, packaging, metal and plastics fabrication, industrial manufacturing and more. Most of what I write comes from what I've learned on those projects.
+## Why I started Shopfloor Matters
 
-## What the site is about
+There's a huge amount of confusion about what it really takes to build a smart factory. The same words get used to mean different things, and AI often gets talked about as if it works without the right data. A lot of manufacturers simply aren't sure where to start.
 
-Smart manufacturing and AI are everywhere right now. Most of what gets written about them skips the hard part.
+I love explaining this stuff, and I'm genuinely excited about where the market is heading. AI is changing what's possible on the shopfloor, and the manufacturers who get their data and their applications right are going to get a huge amount out of it.
 
-I write about shopfloor AI, and what it really takes to move from paper, Excel, ERP screens on the shopfloor or a homegrown system to a truly smart factory.
+So that's what I write about: shopfloor AI, and what it really takes to move from paper, Excel, ERP screens on the shopfloor or a homegrown system to a truly smart factory.
 
-The content centres on the technology applications that get you there: MES/MOM, connected worker, ERP, WMS, CPQ, supply chain planning, APS, PLM, quality and lab systems, maintenance systems, and the IIoT and data platforms that connect them all. It also covers the business challenges you'll face along the way, from building the case and choosing a vendor to bringing people with you and rolling out across sites.
+That covers the technology applications that get you there, like MES/MOM, connected worker, ERP, WMS, CPQ, supply chain planning, APS, PLM, quality and maintenance systems, and the data platforms that connect them. And it covers the business challenges you'll face along the way, from building the case and choosing a vendor to bringing people with you and rolling out across sites.
 
-All of it is vendor-neutral. I work for a vendor, so I won't recommend a product on the site, mine included.
+It's all vendor-neutral. I work for a vendor, so I won't recommend a product on the site, mine included.
 
 ## What you'll find on it
 
@@ -33,7 +33,7 @@ The next four show you how to get the most out of the site, one feature at a tim
 
 After that, I'll send you one article at a time, following the learning paths, with the useful part in the email itself. Weekly to start, then every fortnight.
 
-One favour before then. Hit reply and tell me your role, and the biggest shopfloor challenge you're working on right now. It helps me write about what's actually useful, and I'd like to know who's reading.
+One favour before then. Hit reply and tell me a bit about you: your role, and the biggest shopfloor challenge you're working on right now. I read the replies myself, and they help me write about what's actually useful.
 
 [[button: Have a look around the site]]
 
