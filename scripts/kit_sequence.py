@@ -27,7 +27,7 @@ import yaml
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 from build import ROOT, SITE, parse_md  # noqa: E402
-from newsletter import API, article, email_html, extras, clip, written_email  # noqa: E402
+from newsletter import API, article, email_html, extras, clip, written_email, intro_emails  # noqa: E402
 
 
 def kit(method, path, key, body=None):
@@ -87,10 +87,16 @@ def plan(cfg, limit=None):
     items = order()
     titles = [article(slug)[0] for slug, _, _ in items]
     out = []
+    intro_gap = int(seq.get("intro_every_days", 3))
+    for j, (subject, preview, content) in enumerate(intro_emails()):
+        out.append({"subject": subject, "preview_text": preview, "content": content,
+                    "delay_value": 0 if j == 0 else intro_gap, "delay_unit": "days",
+                    "published": bool(seq.get("publish", False)), "position": j})
+    n_intro = len(out)
     for i, (slug, path, starts) in enumerate(items[:limit]):
         title, description, intro = article(slug)
         extra = notes.get(slug) or {}
-        note = seq.get("welcome", "") if i == 0 else extra.get("note", "")
+        note = extra.get("note", "")
         more = extras(slug)
         more["path"] = {"title": path["title"], "blurb": path["blurb"], "starts": starts and i > 0}
         more["next"] = titles[i + 1] if i + 1 < len(titles) else ""
@@ -101,10 +107,10 @@ def plan(cfg, limit=None):
             "subject": subject,
             "preview_text": preview,
             "content": content,
-            "delay_value": 0 if i == 0 else (7 if i < first else gap),
+            "delay_value": (7 if n_intro else 0) if i == 0 else (7 if i < first else gap),
             "delay_unit": "days",
             "published": bool(seq.get("publish", False)),
-            "position": i,
+            "position": n_intro + i,
         })
     return seq, out
 

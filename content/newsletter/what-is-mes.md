@@ -2,13 +2,7 @@
 subject: "You already have an MES."
 preview: "It's just made of paper travellers, whiteboards, spreadsheets and what people remember."
 ---
-Welcome to Shopfloor Matters, and thank you for signing up.
-
-Each email in this series takes one article from the site and gives you the useful part straight away, in about five minutes. If you want to go deeper, the full article is one click away. They'll come weekly for the first couple of months, then every fortnight, following the learning paths on the site: we start with the foundations and work up to shopfloor AI and the business case for it.
-
-If you ever have a question about your own project, just hit reply. It comes straight to me.
-
-So, let's start at the beginning.
+From here on, each email takes one article from the site and gives you the useful part in about five minutes. We start where the foundations path starts.
 
 ## Most factories already have an MES
 

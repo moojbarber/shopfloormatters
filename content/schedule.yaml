@@ -11,18 +11,20 @@ start: 2026-11-10        # a Tuesday
 send_time: "08:00"       # UK time the email goes out
 
 # Evergreen newsletter: every subscriber starts at email 1, whenever they join.
-# The order follows the learning paths in content/paths.yaml (each article once, the
+# First the getting-started emails in content/newsletter/intro (welcome, then the site's features),
+# then one email per article.
+# The article order follows the learning paths in content/paths.yaml (each article once, the
 # first time it appears). scripts/kit_sequence.py loads it into a Kit sequence.
 # Leave publish false until the drafts have been reviewed in Kit.
 # Sign-up boxes stay off until this is true, even with KIT_FORM_ID set in GitHub.
 signups_open: false
 sequence:
   name: "Shopfloor Matters: the article series"
-  weekly_first: 8          # the first 8 emails go a week apart...
+  intro_every_days: 3      # the getting-started emails (content/newsletter/intro) go 3 days apart
+  weekly_first: 8          # then the first 8 article emails go a week apart...
   then_every_days: 14      # ...then every fortnight
   send_hour: 8             # UK time
   publish: false
-  welcome: "Welcome to Shopfloor Matters. Over time I'll send you every article on the site, one at a time, following the learning paths from the foundations of MES/MOM through to the business case and implementation. Weekly to start, then every fortnight.\n\nWe're starting at the beginning: what MES and MOM actually are."
 weekly:
   - connected-worker-one-app-not-five
   - what-is-a-smart-factory

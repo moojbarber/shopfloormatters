@@ -136,32 +136,47 @@ def email_html(slug, title, description, intro, note="", ps="", more=None):
 {short}{heads}{button}{faq}{rel}
 <p style="margin-top:28px">If you have a question about your own project, just hit reply.</p>
 <p>Matt</p>{tail}{nxt}
-<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first article.</p>"""
+<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can <a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first email.</p>"""
 
 
-def written_email(slug, path_title="", minutes=0):
-    """A hand-written email in content/newsletter/<slug>.md (front matter: subject, preview), or None.
-    `[[button: Label]]` on its own line becomes the button to the full article."""
-    f = ROOT / "content" / "newsletter" / f"{slug}.md"
-    if not f.exists():
-        return None
-    fm, body = parse_md(f)
+def render_written(body, url, label="", minutes=0, link_text="Read on the site"):
+    """Turn a hand-written email (markdown) into Kit HTML. `[[button: Label]]` on its own line becomes a button to `url`."""
     utm = "utm_source=newsletter&utm_medium=email"
-    url = f"{SITE}/post/{slug}?{utm}"
     button = lambda m: (f'<p style="margin:28px 0"><a href="{url}" style="display:inline-block;padding:14px 24px;border-radius:12px;'
                         f'background:#8b6cff;color:#ffffff;font-weight:700;text-decoration:none">{html.escape(m.group(1).strip())} →</a></p>')
     out = markdown.markdown(body)
     out = re.sub(r"<p>\[\[button:(.*?)\]\]</p>", button, out)
     out = re.sub(r'href="/([^"]*)"', lambda m: f'href="{SITE}/{m.group(1)}{"&" if "?" in m.group(1) else "?"}{utm}"', out)
     out = out.replace("<h2>", '<h2 style="font-size:19px;line-height:1.3;margin:30px 0 10px">')
-    bits = [html.escape(path_title)] if path_title else []
-    bits.append(f'<a href="{url}" style="color:#888">Read on the site</a>')
+    bits = [html.escape(label)] if label else []
+    bits.append(f'<a href="{url}" style="color:#888">{link_text}</a>')
     if minutes:
         bits.append(f"{minutes}-minute read")
     top = f'<p style="margin:0 0 20px;font-size:13px;color:#888">{" · ".join(bits)}</p>'
     foot = (f'<p style="margin-top:32px;font-size:13px;color:#888">Forwarded this email? You can '
-            f'<a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first article.</p>')
-    return fm["subject"], fm.get("preview", ""), top + out + foot
+            f'<a href="{SITE}/subscribe?{utm}">subscribe here</a> to get the series from the first email.</p>')
+    return top + out + foot
+
+
+def written_email(slug, path_title="", minutes=0):
+    """A hand-written article email in content/newsletter/<slug>.md (front matter: subject, preview), or None."""
+    f = ROOT / "content" / "newsletter" / f"{slug}.md"
+    if not f.exists():
+        return None
+    fm, body = parse_md(f)
+    url = f"{SITE}/post/{slug}?utm_source=newsletter&utm_medium=email"
+    return fm["subject"], fm.get("preview", ""), render_written(body, url, path_title, minutes)
+
+
+def intro_emails():
+    """The getting-started emails in content/newsletter/intro/, in file-name order, sent before the articles."""
+    out = []
+    for f in sorted((ROOT / "content" / "newsletter" / "intro").glob("*.md")):
+        fm, body = parse_md(f)
+        link = fm.get("link", "/")
+        url = f"{SITE}{link}{'&' if '?' in link else '?'}utm_source=newsletter&utm_medium=email"
+        out.append((fm["subject"], fm.get("preview", ""), render_written(body, url, "Getting started", 0, "Open the site")))
+    return out
 
 
 def main():
