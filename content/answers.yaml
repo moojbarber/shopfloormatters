@@ -540,16 +540,16 @@ oee-vs-teep:
       a: "When someone proposes a new line or another big capital investment. A low TEEP alongside a reasonable OEE often means the capacity already exists in unused hours. Before buying a new machine, it's worth asking whether an extra shift would do the same job."
 
 build-vs-buy-mes:
-  summary: "There are four ways to run shopfloor systems: code your own, build from low-code blocks, stitch point solutions together, or configure an MES/MOM platform. Each has trade-offs. A configurable platform gives the most value over time, particularly for large, multi-site manufacturers."
+  summary: "There are four ways to run shopfloor systems: code your own, build from low-code blocks, stitch point solutions together, or configure an MES/MOM platform. Each has trade-offs. A configurable platform that your teams can build on is the best of all worlds, and gives the most value over time, particularly for large, multi-site manufacturers."
   faq:
     - q: "Should we build our own MES?"
-      a: "It can work for a narrow scope and a strong internal team, and it can be quick to start. It is much harder to do well, particularly for user experience, performance, scalability and security. You own every upgrade and new capability for its whole life, and knowledge tends to sit with a few people. Eventually it needs replacing. For a full MES/MOM across production, quality, inventory and maintenance, most manufacturers get more value over time from configuring a platform and building only at the edges."
+      a: "It can be quick to start, and AI makes that quicker than ever, but it only gives you exactly what you want if you have a capable software team. Manufacturers who start this way often outgrow it or struggle with the medium and longer-term challenges. It is much harder to do well, particularly for user experience, performance, scalability and security. You own every upgrade and new capability for its whole life, and knowledge tends to sit with a few people. Eventually it needs replacing. For a full MES/MOM across production, quality, inventory and maintenance, most manufacturers get more value over time from configuring a platform and building on top of it."
     - q: "Is stitching point solutions together a good approach?"
       a: "It can work, and each department gets to choose its own tool. The cost is that every boundary is an interface to design, own and retest, some context is lost between systems, and someone has to govern the architecture. Connecting them through a unified namespace is risky, because the sender gets no confirmation that data arrived."
     - q: "What does a homegrown MES really cost?"
       a: "More than it appears. There's no licence fee, but the developers' time is real money, and it grows with every new feature, upgrade and departure. Add the cost of keeping it secure and compatible, and the risk when the person who built it leaves. Compare costs over ten years, not just the first project."
     - q: "Is low-code an alternative to MES?"
-      a: "Low-code platforms are one way of building your own shopfloor applications, and they're usually much faster than coding from scratch. The best MES/MOM platforms include low-code tools too, so you can configure a platform and build on it with the same kind of tools, with much more already built for you on one connected data model."
+      a: "Low-code toolkits are one way of building your own shopfloor applications, and they're usually faster than coding from scratch. But each app tends to solve one narrow problem, and without a consistent data model they can sprawl into a collection of disconnected apps. The best MES/MOM platforms include low-code tools too, so you can configure a platform and build on it with the same kind of tools, with much more already built for you on one connected data model."
 
 preventive-vs-predictive-maintenance:
   label: The short version
